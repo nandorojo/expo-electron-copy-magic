@@ -93,7 +93,7 @@ export const useClipboard = () => {
         oldValue,
       })
       if (newValue) {
-        flatlist.current?.scrollToOffset({ offset: 0, animated: true })
+        // flatlist.current?.scrollToOffset({ offset: 0, animated: true })
         setHistory(newValue)
       }
       //   else setHistory([])
