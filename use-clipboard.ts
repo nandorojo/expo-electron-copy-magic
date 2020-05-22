@@ -1,4 +1,4 @@
-// import clipboard from 'electron-clipboard-extended'
+import clipboardSubscription from 'electron-clipboard-extended'
 import { clipboard } from 'electron'
 import { useEffect, useState, useCallback, useMemo } from 'react'
 import Store from 'electron-store'
@@ -27,9 +27,9 @@ export const useClipboard = ({ query }: Options) => {
   )
 
   useEffect(() => {
-    const unsubscribe = clipboard
+    clipboardSubscription
       .on('text-changed', () => {
-        const justCopied = clipboard.readText()
+        const justCopied = clipboardSubscription.readText()
         if (!justCopied) return
         const previouslyCopied = store.get(STORAGE_KEY) ?? []
 
@@ -43,19 +43,18 @@ export const useClipboard = ({ query }: Options) => {
         const justCopied = clipboard.readImage()
         if (!justCopied) return
         const previouslyCopied = store.get(STORAGE_KEY) ?? []
+        console.log('[use-clipboard][image-changed]', { justCopied })
 
         // add the recently-copied item
         store.set(STORAGE_KEY, [
-          { type: 'image', item: justCopied },
+          { type: 'image', item: justCopied.toDataURL() },
           ...previouslyCopied,
         ])
       })
-    //   .startWatching()
-    //   .startWatching()
+      .startWatching()
     return () => {
-      //   clipboard.off('text-changed')
-      //   clipboard.off('image-changed')
-      unsubscribe.removeAllListeners()
+      clipboardSubscription.off('text-changed')
+      clipboardSubscription.off('image-changed')
     }
   }, [])
 
@@ -66,7 +65,7 @@ export const useClipboard = ({ query }: Options) => {
         oldValue,
       })
       if (newValue) setHistory(newValue)
-      else setHistory([])
+      //   else setHistory([])
     })
     return () => unsubscribe()
   }, [])

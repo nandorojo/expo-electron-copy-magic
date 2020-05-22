@@ -10,7 +10,7 @@ export default function App() {
   return (
     <View style={styles.container}>
       <Text>Hi there</Text>
-      {/* <Text onPress={clearHistory}>from board: {JSON.stringify(history)}</Text> */}
+      <Text onPress={clearHistory}>from board: {JSON.stringify(history)}</Text>
     </View>
   )
 }

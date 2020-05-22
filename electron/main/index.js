@@ -1,8 +1,11 @@
 import { BrowserWindow, Tray, app } from 'electron'
 import * as path from 'path'
 import { format as formatUrl } from 'url'
+import debug from 'electron-debug'
 
 const isDevelopment = process.env.NODE_ENV !== 'production'
+
+debug()
 
 // global reference to mainWindow (necessary to prevent window from being garbage collected)
 let mainWindow
