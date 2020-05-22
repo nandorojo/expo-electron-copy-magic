@@ -12,3 +12,11 @@ web-report/
 
 # macOS
 .DS_Store
+
+# @generated: @expo/electron-adapter@0.0.0-alpha.57
+/.expo/*
+# Expo Web
+/web-build/*
+# electron-webpack
+/dist
+# @end @expo/electron-adapter
