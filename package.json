@@ -7,7 +7,10 @@
     "web": "expo start --web",
     "eject": "expo eject",
     "build:dev": "electron-webpack && electron-builder --dir -c.compression=store -c.mac.identity=null",
-    "build:prod": "electron-webpack && electron-builder --dir -c.mac.identity=null"
+    "build:prod": "electron-webpack && electron-builder --dir -c.mac.identity=null",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder",
+    "postinstall": "electron-builder install-app-deps"
   },
   "dependencies": {
     "@nandorojo/electron-clipboard": "^0.0.2",
@@ -44,7 +47,7 @@
     "typescript": "~3.8.3"
   },
   "private": true,
-  "version": "0.0.1",
+  "version": "0.0.3",
   "name": "copy-magic",
   "author": "Fernando Rojo",
   "build": {
