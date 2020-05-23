@@ -42,7 +42,7 @@ export const CopiedItem = React.memo(function CopiedItem({
     const aspectRatio = width / height
 
     // create dimensions that stretch the full width
-    const padding = 16
+    const padding = 28
     const paddedWidth = windowWidth - padding * 2
     const paddedHeight = paddedWidth / aspectRatio
 

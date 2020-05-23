@@ -54,5 +54,6 @@ export const useSearch = ({ history }: { history: HistoryItem[] }) => {
     toggleShowImages,
     filteredHistory,
     isEmptyQuery: query.trim() && !filteredHistory.length,
+    isEmptyList: !history.length,
   }
 }

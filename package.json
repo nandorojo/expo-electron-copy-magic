@@ -13,6 +13,7 @@
     "postinstall": "electron-builder install-app-deps"
   },
   "dependencies": {
+    "@expo/react-native-action-sheet": "^3.8.0",
     "@nandorojo/electron-clipboard": "^0.0.2",
     "@react-native-community/hooks": "^2.5.1",
     "electron-clipboard-extended": "^1.1.1",
@@ -47,13 +48,34 @@
     "typescript": "~3.8.3"
   },
   "private": true,
-  "version": "0.0.3",
+  "version": "0.0.4",
   "name": "copy-magic",
   "author": "Fernando Rojo",
   "build": {
     "appId": "nandorojo.copymagic",
     "mac": {
       "category": "public.app-category.utilities"
-    }
+    },
+    "extraMetadata": {
+      "main": "main.js"
+    },
+    "files": [
+      {
+        "from": "dist/main/",
+        "to": "./",
+        "filter": [
+          "**/*"
+        ]
+      },
+      {
+        "from": "dist/renderer",
+        "to": "./",
+        "filter": [
+          "**/*"
+        ]
+      },
+      "package.json",
+      "**/node_modules/**/*"
+    ]
   }
 }
