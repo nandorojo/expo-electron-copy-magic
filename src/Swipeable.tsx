@@ -4,6 +4,7 @@ import Swipes, {
 } from 'react-native-gesture-handler/Swipeable'
 import { Animated, Text, View, StyleSheet, TextStyle } from 'react-native'
 import { RectButton } from 'react-native-gesture-handler'
+import { Ionicons } from '@expo/vector-icons'
 
 type SwipeableProps = {
   rightActions?: null | SwipeableAction[]
@@ -187,3 +188,54 @@ const styles = StyleSheet.create({
     padding: 10,
   },
 })
+
+export function SwipeableItem({
+  onDelete,
+  children,
+}: {
+  onDelete: () => void
+  children: React.ReactNode
+}) {
+  return (
+    <Swipeable
+      rightActions={[
+        {
+          text: 'Remove',
+          onPress: onDelete,
+          backgroundColor: 'red',
+          color: 'white',
+          renderIcon: function Icon(progress) {
+            return (
+              <Animated.View
+                style={{
+                  transform: [
+                    {
+                      scale: progress?.interpolate({
+                        inputRange: [0, 1.2],
+                        outputRange: [0.5, 1.2],
+                        extrapolate: 'clamp',
+                      }),
+                    },
+                  ],
+                  opacity: progress?.interpolate({
+                    inputRange: [0, 1],
+                    outputRange: [0, 1],
+                  }),
+                }}
+              >
+                <Ionicons
+                  style={{ marginTop: 10 }}
+                  name="ios-trash"
+                  size={30}
+                  color="white"
+                />
+              </Animated.View>
+            )
+          },
+        },
+      ]}
+    >
+      {children}
+    </Swipeable>
+  )
+}

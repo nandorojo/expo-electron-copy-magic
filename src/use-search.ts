@@ -2,6 +2,11 @@ import { useState, useReducer, useMemo } from 'react'
 import { HistoryItem, isHistoryImage } from './use-clipboard'
 import moment from 'moment'
 
+/**
+ * Hook used to filter results.
+ *
+ * Enables search,
+ */
 export const useSearch = ({ history }: { history: HistoryItem[] }) => {
   const [query, setQuery] = useState('')
 
@@ -10,8 +15,6 @@ export const useSearch = ({ history }: { history: HistoryItem[] }) => {
   const [showText, toggleShowText] = useReducer(show => !show, true)
 
   const filteredHistory = useMemo(() => {
-    // if (!query.trim() && showImages && showText) return history
-
     return history.filter(copied => {
       // check if they typed text that's in this date
       const isInDate =
@@ -26,7 +29,7 @@ export const useSearch = ({ history }: { history: HistoryItem[] }) => {
       if (isHistoryImage(copied)) {
         if (!showImages) return false
 
-        // also query the image URL, who knows
+        // also query the image URL, just in case
         const isInUrl = copied.value.url
           .toLowerCase()
           .includes(query.trim().toLowerCase())
@@ -35,7 +38,7 @@ export const useSearch = ({ history }: { history: HistoryItem[] }) => {
 
       if (!showText) return false
 
-      // check if the copied text includes this
+      // check if the copied text includes the typed text
       const isInText = copied.value
         .toLowerCase()
         .trim()

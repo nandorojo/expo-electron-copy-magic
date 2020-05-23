@@ -1,19 +1,18 @@
 // dependencies
 import React, { useRef } from 'react'
-import { Image, Animated, Text, View } from 'react-native'
+import { Image, Text, View } from 'react-native'
 import { ListItem } from 'react-native-elements'
 import moment from 'moment'
 import { useDimensions } from '@react-native-community/hooks'
 import { Notifier, NotifierComponents } from 'react-native-notifier'
 import { RectButton } from 'react-native-gesture-handler'
-import { Ionicons } from '@expo/vector-icons'
 import { useHover, useFocus, useActive } from 'react-native-web-hooks'
 import { useTimingTransition } from 'react-native-redash'
 import Reanimated from 'react-native-reanimated'
 
 // our code
 import { HistoryItem, isHistoryImage } from './use-clipboard'
-import Swipeable from './Swipeable'
+import { SwipeableItem } from './Swipeable'
 
 type ItemProps = HistoryItem & {
   onPress: (value: HistoryItem) => void
@@ -32,11 +31,12 @@ export const CopiedItem = React.memo(function CopiedItem({
   const isFocused = useFocus(ref)
   const isActive = useActive(ref)
   const animatedHoverState = useTimingTransition(
+    // this is 1 if this item is not hovered
+    // it is 0 if it is hovered
     !isHovered && !isFocused && !isActive
   )
 
   // if the copied item was an image
-  // we use this typeguard function for TS's compiler
   if (isHistoryImage(props)) {
     const { url, height, width } = props.value
     const aspectRatio = width / height
@@ -51,7 +51,7 @@ export const CopiedItem = React.memo(function CopiedItem({
     const finalHeight = width < paddedWidth ? height : paddedHeight
 
     const press = () => {
-      onPress(props)
+      onPress(props) // this, from use-clipboard, will re-copy this item.
       Notifier.showNotification({
         title: 'Copied Image!',
         componentProps: {
@@ -68,6 +68,7 @@ export const CopiedItem = React.memo(function CopiedItem({
         <Reanimated.View
           ref={ref}
           style={{
+            // lower opacity when we hover
             opacity: Reanimated.interpolate(animatedHoverState, {
               inputRange: [0, 1],
               outputRange: [0.25, 1],
@@ -110,7 +111,7 @@ export const CopiedItem = React.memo(function CopiedItem({
     onPress(props)
     Notifier.showNotification({
       title: 'Copied!',
-      // @ts-ignore we pass a text node here, it's fine
+      // @ts-ignore (we pass a text node here instead of a string, it's fine)
       description: <Text numberOfLines={3}>{value}</Text>,
       Component: NotifierComponents.Notification,
     })
@@ -141,54 +142,3 @@ export const CopiedItem = React.memo(function CopiedItem({
     </SwipeableItem>
   )
 })
-
-function SwipeableItem({
-  onDelete,
-  children,
-}: {
-  onDelete: () => void
-  children: React.ReactNode
-}) {
-  return (
-    <Swipeable
-      rightActions={[
-        {
-          text: 'Remove',
-          onPress: onDelete,
-          backgroundColor: 'red',
-          color: 'white',
-          renderIcon: function Icon(progress) {
-            return (
-              <Animated.View
-                style={{
-                  transform: [
-                    {
-                      scale: progress?.interpolate({
-                        inputRange: [0, 1.2],
-                        outputRange: [0.5, 1.2],
-                        extrapolate: 'clamp',
-                      }),
-                    },
-                  ],
-                  opacity: progress?.interpolate({
-                    inputRange: [0, 1],
-                    outputRange: [0, 1],
-                  }),
-                }}
-              >
-                <Ionicons
-                  style={{ marginTop: 10 }}
-                  name="ios-trash"
-                  size={30}
-                  color="white"
-                />
-              </Animated.View>
-            )
-          },
-        },
-      ]}
-    >
-      {children}
-    </Swipeable>
-  )
-}

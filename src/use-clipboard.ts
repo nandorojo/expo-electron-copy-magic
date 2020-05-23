@@ -1,8 +1,7 @@
 import clipboardSubscription from '@nandorojo/electron-clipboard'
 import { clipboard, nativeImage } from 'electron'
-import { useEffect, useState, useCallback, useMemo, useRef } from 'react'
+import { useEffect, useState, useCallback, useRef } from 'react'
 import Store from 'electron-store'
-import moment from 'moment'
 import { FlatList } from 'react-native'
 
 const store = new Store({ accessPropertiesByDotNotation: true, watch: true })
@@ -25,7 +24,8 @@ type HistoryImageText = {
   copiedAt?: string
 }
 
-// this looks weird, but it helps Typescript deal with the two differing "value" types
+// this looks weird, but it helps Typescript deal with the two differing "value" types for HistoryItem
+// it's just a necessary convenience function used later
 export function isHistoryImage(
   copied: HistoryItem
 ): copied is HistoryItemImage {
@@ -34,11 +34,8 @@ export function isHistoryImage(
     !!(copied as HistoryItemImage)?.value?.url
   )
 }
+// schema for an item in the history
 export type HistoryItem = HistoryImageText | HistoryItemImage
-
-// type Options = {
-//   query: string
-// }
 
 export const useClipboard = () => {
   const [history, setHistory] = useState<HistoryItem[]>(
@@ -47,6 +44,9 @@ export const useClipboard = () => {
   const flatlist = useRef<FlatList<HistoryItem>>(null)
 
   useEffect(() => {
+    // listen to changes in the system clipboard
+    // when it changes, we update the history in the local storage cache
+    // this triggers a subscription in the next useEffect() function
     const subscription = clipboardSubscription
       .on('text-changed', () => {
         const justCopied = clipboardSubscription.readText()
@@ -87,16 +87,15 @@ export const useClipboard = () => {
   }, [])
 
   useEffect(() => {
+    // listen to changes in the local storage state, and update the app state when they fire
     const unsubscribe = store.onDidChange(STORAGE_KEY, (newValue, oldValue) => {
       console.log('[use-clipboard] updated', STORAGE_KEY, {
         newValue,
         oldValue,
       })
       if (newValue) {
-        // flatlist.current?.scrollToOffset({ offset: 0, animated: true })
         setHistory(newValue)
       }
-      //   else setHistory([])
     })
     return () => unsubscribe()
   }, [])
