@@ -54,7 +54,7 @@ function createMainWindow() {
     } else {
       mainWindow.setBounds({
         x: x - width / 2,
-        y,
+        y: process.platform === 'win32' ? y - height : y,
         height,
         width,
       })
