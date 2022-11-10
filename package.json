@@ -42,7 +42,7 @@
     "@types/react": "~16.9.23",
     "@types/react-native": "~0.61.17",
     "babel-preset-expo": "~8.1.0",
-    "electron": "^9.4.0",
+    "electron": "^18.3.7",
     "electron-builder": "^22.6.1",
     "eslint-config-nando": "^1.0.9",
     "typescript": "~3.8.3"
